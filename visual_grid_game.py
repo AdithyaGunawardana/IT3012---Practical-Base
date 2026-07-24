@@ -35,6 +35,18 @@ class VisualGridHuntGame:
             if tuple(op_pos) != (0, 0) and tuple(op_pos) not in self.walls and tuple(op_pos) not in self.food_positions:
                 self.opponents.append(op_pos)
 
+        # Generate toxic traps that penalize the agent if stepped on
+        self.toxic_traps = set()
+        num_traps = 3
+        while len(self.toxic_traps) < num_traps:
+            tx = random.randint(0, self.width - 1)
+            ty = random.randint(0, self.height - 1)
+            pos_tuple = (tx, ty)
+            if (pos_tuple != (0, 0)
+                    and pos_tuple not in self.walls
+                    and pos_tuple not in self.food_positions):
+                self.toxic_traps.add(pos_tuple)
+
         self.score = 0
         self.steps = 0
         self.collision = False
@@ -47,7 +59,8 @@ class VisualGridHuntGame:
             'hit_wall': tuple(self.agent_pos) in self.walls,
             'collision': self.collision,
             'score': self.score,
-            'remaining_food': len(self.food_positions)
+            'remaining_food': len(self.food_positions),
+            'smells_toxin': tuple(self.agent_pos) in self.toxic_traps   # added to percepts for toxic traps
         }
 
     def execute_action(self, action: str):
@@ -72,6 +85,10 @@ class VisualGridHuntGame:
         if tuple_pos in self.food_positions:
             self.food_positions.remove(tuple_pos)
             self.score += 20
+
+        # Penalize for stepping on toxic traps
+        if tuple_pos in self.toxic_traps:
+            self.score -= 15
 
         for op in self.opponents:
             move = random.choice(['Up', 'Down', 'Left', 'Right', 'Stay'])
@@ -152,6 +169,18 @@ class GridGameGUI:
             y1 = (self.env.height - 1 - oy) * self.cell_size + offset
             self.canvas.create_rectangle(x1, y1, x1 + self.cell_size * 0.6, y1 + self.cell_size * 0.6, fill="#990000",
                                          outline="#7a0000")
+
+        # Draw toxic traps as purple triangles
+        for tx, ty in self.env.toxic_traps:
+            offset = self.cell_size * 0.3
+            x1 = tx * self.cell_size + offset
+            y1 = (self.env.height - 1 - ty) * self.cell_size + offset
+            self.canvas.create_polygon(
+                x1 + self.cell_size * 0.2, y1,
+                x1, y1 + self.cell_size * 0.4,
+                x1 + self.cell_size * 0.4, y1 + self.cell_size * 0.4,
+                fill="#9333ea", outline="#6b21a8"
+        )
 
         ax, ay = self.env.agent_pos
         offset = self.cell_size * 0.15
