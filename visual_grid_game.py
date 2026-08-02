@@ -51,15 +51,11 @@ class VisualGridHuntGame:
         self.steps = 0
         self.collision = False
 
+    # step 1.1
     def get_percept(self) -> dict:
         return {
-            'agent_pos': list(self.agent_pos),
-            'opponent_positions': [list(op) for op in self.opponents],
-            'smells_food': tuple(self.agent_pos) in self.food_positions,
-            'hit_wall': tuple(self.agent_pos) in self.walls,
-            'collision': self.collision,
-            'score': self.score,
-            'remaining_food': len(self.food_positions),
+            'wall_ahead': tuple(self.agent_pos) in self.walls,
+            'food_here': tuple(self.agent_pos) in self.food_positions,
             'smells_toxin': tuple(self.agent_pos) in self.toxic_traps   # added to percepts for toxic traps
         }
 
@@ -207,9 +203,55 @@ class GridGameGUI:
 
         step()
 
+# step 1.2
+class SimpleReflexAgent:
+    def sense_and_act(self, percept):
+        if percept['smells_toxin']:
+            return 'Down'
+        elif percept['wall_ahead']:
+            return 'Left'
+        elif percept['food_here']:
+            return 'Up'
+        else:
+            return 'Up'
+
+# step 1.3
+class ModelBasedAgent:
+    def __init__(self):
+        self.local_pos = (0, 0)
+        self.visited = {(0, 0)}
+        self.last_action = None
+
+    def sense_and_act(self, percept):
+        if percept['smells_toxin']:
+            action = 'Down'
+        elif percept['wall_ahead']:
+            candidates = ['Left', 'Right', 'Down']
+            action = next((a for a in candidates if self._next_pos(a) not in self.visited), 'Left')
+        elif percept['food_here']:
+            action = 'Up'
+        else:
+            action = 'Up'
+
+        self.local_pos = self._next_pos(action)
+        self.visited.add(self.local_pos)
+        self.last_action = action
+        return action
+
+    def _next_pos(self, action):
+        x, y = self.local_pos
+        if action == 'Up':
+            return (x, y + 1)
+        if action == 'Down':
+            return (x, y - 1)
+        if action == 'Left':
+            return (x - 1, y)
+        if action == 'Right':
+            return (x + 1, y)
+        return (x, y)
 
 if __name__ == "__main__":
     root = tk.Tk()
     # Try a larger grid size like 12x12 with 15 food and 3 opponents!
-    app = GridGameGUI(root, width=12, height=12, num_food=15, num_opponents=0)
+    app = GridGameGUI(root, width=10, height=10, num_food=15, num_opponents=0)
     root.mainloop()
