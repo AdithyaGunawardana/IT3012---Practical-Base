@@ -1,7 +1,7 @@
 # visual_grid_game.py
 import random
 import tkinter as tk
-
+from agent import SearchAgent, GreedyGridAgent
 
 class VisualGridHuntGame:
     """A flexible Pacman-style grid environment with support for configurable opponents and larger scales."""
@@ -56,7 +56,11 @@ class VisualGridHuntGame:
         return {
             'wall_ahead': tuple(self.agent_pos) in self.walls,
             'food_here': tuple(self.agent_pos) in self.food_positions,
-            'smells_toxin': tuple(self.agent_pos) in self.toxic_traps   # added to percepts for toxic traps
+            'smells_toxin': tuple(self.agent_pos) in self.toxic_traps,  # added to percepts for toxic traps
+            'agent_pos': list(self.agent_pos),          # added to percepts back for agent position (in lab 3)
+            'grid_size': (self.width, self.height),     # Lab 03 - made agent aware of env
+            'walls': list(self.walls),
+            'all_food': list(self.food_positions)
         }
 
     def execute_action(self, action: str):
@@ -112,8 +116,9 @@ class GridGameGUI:
         self.root = root
         self.root.title("IT3012 - Scalable Multi-Agent Grid Hunt")
 
-        self.env = VisualGridHuntGame(width=width, height=height, num_food=num_food, num_opponents=num_opponents,
-                                      custom_walls=walls)
+        self.env = VisualGridHuntGame(width=width, height=height, num_food=num_food, num_opponents=num_opponents, custom_walls=walls)
+        self.agent = SearchAgent()  # Lab 03
+        # self.agent = GreedyGridAgent()  # for greedy agent
 
         # Dynamically calculate cell size so the total canvas fits nicely within a 600x600 window ceiling
         max_canvas_dim = 600
@@ -190,7 +195,9 @@ class GridGameGUI:
 
         def step():
             if not self.env.is_done():
-                action = random.choice(['Up', 'Down', 'Left', 'Right'])
+                # action = random.choice(['Up', 'Down', 'Left', 'Right'])   # old movement
+                percept = self.env.get_percept()    # new movement
+                action = self.agent.sense_and_act(percept)
                 self.env.execute_action(action)
 
                 self.draw_grid()
