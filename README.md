@@ -7,7 +7,7 @@ This is the lab submission of IT24103038 - Gunawardana M.A.A. for the IT3012 - I
 ```text
 IT3012---Practical-Base/
 ├── Lab Sheets/
-│   ├── 1/
+│   └── 1/
 │       └── IT24103038_Lab01_Answers.pdf
 ├── agent.py
 ├── grid_game.py
