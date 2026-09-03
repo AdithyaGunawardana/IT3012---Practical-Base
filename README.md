@@ -25,7 +25,7 @@ IT3012---Practical-Base/
 
 ### Lab 1 Submission:
 
-First lab submission was submitted under the **master** branch. The answers sheet can be found inside the Lab Sheets folder inside folder 1.
+First lab submission was submitted under the **LAB-01** branch. The answers sheet can be found inside the Lab Sheets folder inside folder 1.
 
 ### Lab 2 Submission:
 
