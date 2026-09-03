@@ -11,8 +11,10 @@ IT3012---Practical-Base/
 │   │   └── IT24103038_Lab01_Answers.pdf
 │   ├── 2/
 │   │   └── IT24103038_Lab02_Answers.pdf
-|	└── 3/
-│       └── IT24103038_Lab03_Answers.pdf
+|	├── 3/
+│   │   └── IT24103038_Lab03_Answers.pdf
+|	└── 4/
+│       └── IT24103038_Lab04_Answers.pdf
 ├── agent.py
 ├── grid_game.py
 ├── README.md
@@ -34,3 +36,7 @@ First lab submission for week 1 was submitted under the **LAB-01** branch. The a
 ### Lab 3 Submission:
 
 3rd lab submission for week 3 was submitted under the **LAB-03** branch. The answers sheet can be found inside the Lab Sheets folder inside folder 3.
+
+### Lab 4 Submission:
+
+3rd lab submission for week 4 was submitted under the **LAB-04** branch. The answers sheet can be found inside the Lab Sheets folder inside folder 4.
