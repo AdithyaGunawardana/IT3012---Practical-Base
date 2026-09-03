@@ -228,6 +228,7 @@ class ModelBasedAgent:
         self.local_pos = (0, 0)
         self.visited = {(0, 0)}
         self.last_action = None
+        self.agent.active_algo = 'AStar'    # Lab 04
 
     def sense_and_act(self, percept):
         if percept['smells_toxin']:
@@ -262,3 +263,9 @@ if __name__ == "__main__":
     # Try a larger grid size like 12x12 with 15 food and 3 opponents!
     app = GridGameGUI(root, width=10, height=10, num_food=15, num_opponents=0)
     root.mainloop()
+
+# lab 04
+# Step 1.1: Implementing the Heuristic Functions
+a = SearchAgent()
+print("Manhattan Distance: ", a.manhattan_distance((0,0),(3,4))) # test outputs
+print("Euclidean Distance: ", a.euclidean_distance((0,0),(3,4))) # test outputs
